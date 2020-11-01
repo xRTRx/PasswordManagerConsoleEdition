@@ -81,8 +81,7 @@ int User::GenerateUserID() {
 	std::string s = ss.str();
 	readf.close();
 	if (ss.str().empty()) {
-		User_ID = 1'000;
-		return User_ID;
+		return User_ID = 1'000;
 	} else {
 		std::set<int> user_ids;
 		std::string id;

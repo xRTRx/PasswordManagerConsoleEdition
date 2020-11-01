@@ -35,7 +35,7 @@ void psw::Select(const std::string& field, const std::string& where_field,
 
 void psw::SelectAll() {
 	std::string sql("SELECT Name, Login, Password from Passwords WHERE User_ID = '" + std::to_string(User_ID) + "';");
-	std::stringstream result = get_execute_sql(sql);
+	std::stringstream result = get_executed_sql(sql);
 	while (result) {
 		std::string name, l, p; // Name, Login, Password
 		getline(result, name, '\'');
