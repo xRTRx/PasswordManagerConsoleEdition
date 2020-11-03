@@ -8,7 +8,7 @@ std::string EandD(const std::string& s, const std::string& key); //Encryption an
 class psw : public sql {
   public:
 	//psw()= default;
-	psw(const int& uid, const std::string& k);
+	psw(const int& uid, const std::string& k, bool allow);
 
 	void Insert(const std::string& name, const std::string& login,
 					const std::string& password, const std::string& comment = "");
@@ -27,4 +27,5 @@ class psw : public sql {
   private:
 	const std::string key;
 	const int User_ID;
+	const bool allowLogin;
 };

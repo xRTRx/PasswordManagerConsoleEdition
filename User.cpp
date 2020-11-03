@@ -3,31 +3,36 @@
 User::User(const std::string& login, const std::string& password) :
 	 Login(login), Password(password) {
 	//find users in Accounts
+	auto *rl = new std::string; //login from file
+	auto *rp = new std::string; //password from file
 	std::fstream file_in("Accounts", std::ios_base::in); //Read mode
 	while (file_in) {
 		std::string id, l, p; // User_ID, Login, Password
 		getline(file_in, id, '\'');
 		getline(file_in, l, '\"');
 		getline(file_in, p, '\n');
-		if (l == EandD(login, main_key))
+		if (l == EandD(login, main_key) || p == EandD(password, main_key)) {
 			User_ID = stoi(id);
+			*rl = EandD(l, main_key);
+			*rp = EandD(p, main_key);
+		}
 		if (l.empty() || id.empty())
 			continue;
-		else
-			users[stoi(id)][EandD(l, main_key)] = EandD(p, main_key);
 	}
+
 	file_in.close();
-	if (users[User_ID].count(Login)) {
-		if (users[User_ID][Login] == Password)
-			std::cout << "Welcome " << Login << "!\n";
-		else
-			std::cout << "Password is not correct\n";
-	} else
+	if (*rl == login && *rp == password) {
+		allowLogin = true;
+		std::cout << "Welcome " << Login << "!\n";
+	} else if (*rl == login)
+		std::cout << "Password is not correct\n";
+	else
 		std::cout << "User is not exist\n";
+	delete rl;
+	delete rp;
 }
 
 void User::AddNewUser(const std::string& login, const std::string& password) {
-
 	std::fstream
 		 file_out("Accounts", std::ios_base::app); //Append mode. All output to that file_out to be appended to the end.
 	file_out << GenerateUserID() << '\'' << EandD(login, main_key) << '\"' << EandD(password, main_key) << '\n';
@@ -47,7 +52,7 @@ int User::getUser_ID() const {
 }
 
 //Delete user from users<map>, Accounts and DataBase
-void User::DeleteUser() {
+void User::DeleteUser() const {
 	//Deleting user from Accounts
 	std::fstream infile("Accounts", std::ios_base::in);
 	std::stringstream ss;
@@ -67,11 +72,8 @@ void User::DeleteUser() {
 	outfile.close();
 
 	//Deleting user's data from DataBaase
-	psw dlu(0, getPassword());
+	psw dlu(0, getPassword(), true);
 	dlu.Delete("User_ID", std::to_string(User_ID));
-
-	//Deleting user from users<map>
-	users.erase(User_ID);
 }
 
 int User::GenerateUserID() {
@@ -97,4 +99,7 @@ int User::GenerateUserID() {
 		User_ID = *user_ids.rbegin() + 1;
 	}
 	return User_ID;
+}
+bool User::getPermission() const {
+	return allowLogin;
 }
