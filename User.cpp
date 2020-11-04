@@ -32,6 +32,7 @@ User::User(const std::string& login, const std::string& password) :
 	delete rp;
 }
 
+//add bool(return type) marker to know if the data was successfully written into file or not
 void User::AddNewUser(const std::string& login, const std::string& password) {
 	std::fstream
 		 file_out("Accounts", std::ios_base::app); //Append mode. All output to that file_out to be appended to the end.
@@ -51,7 +52,7 @@ int User::getUser_ID() const {
 	return User_ID;
 }
 
-//Delete user from users<map>, Accounts and DataBase
+//Delete user from Accounts and DataBase
 void User::DeleteUser() const {
 	//Deleting user from Accounts
 	std::fstream infile("Accounts", std::ios_base::in);
