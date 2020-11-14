@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 #include "db_lite.h"
 
@@ -18,7 +19,10 @@ class psw : public sql {
 
 	void Select(const std::string& field, const std::string& where_field, const std::string& where_value);
 
-	void SelectAll();
+	//get IDs
+	std::vector<int> SelectID();
+
+	std::vector<std::string> SelectAll();
 
 	void Delete(const std::string& field, const std::string& value);
 

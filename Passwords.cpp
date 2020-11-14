@@ -22,10 +22,17 @@ void psw::Insert(const std::string& name, const std::string& login,
 void psw::Update(const std::string& field, const std::string& value,
 					  const std::string& where_field, const std::string& wvalue) {
 	if (allowLogin) {
-		std::string sql("UPDATE Passwords SET " + field + " = '" +
-			 EandD(value, key) + "' WHERE " + where_field + " = '" +
-			 EandD(wvalue, key) + "';");
-		execute_sql(sql);
+		if (where_field == "ID") {
+			std::string sql("UPDATE Passwords SET " + field + " = '" +
+				 EandD(value, key) + "' WHERE " + where_field + " = '" +
+				 wvalue + "';");
+			execute_sql(sql);
+		} else {
+			std::string sql("UPDATE Passwords SET " + field + " = '" +
+				 EandD(value, key) + "' WHERE " + where_field + " = '" +
+				 EandD(wvalue, key) + "';");
+			execute_sql(sql);
+		}
 	}
 }
 
@@ -39,28 +46,34 @@ void psw::Select(const std::string& field, const std::string& where_field,
 	}
 }
 
-void psw::SelectAll() {
+std::vector<std::string> psw::SelectAll() {
+	std::vector<std::string> pw = {}; //for passwords
 	if (allowLogin) {
 		std::string sql("SELECT Name, Login, Password from Passwords WHERE User_ID = '" + std::to_string(User_ID) + "';");
 		std::stringstream result = get_executed_sql(sql);
+		int a = 1;
 		while (result) {
 			std::string name, l, p; // Name, Login, Password
 			getline(result, name, '\'');
 			getline(result, l, '\"');
 			getline(result, p, '\n');
-			if (l.empty() || name.empty())
+			if (l.empty() || name.empty()) {
 				continue;
-			std::cout << "Name: " << EandD(name, key) << "\nLogin: " << EandD(l, key)
-						 << "\nPassword: " << EandD(p, key) << '\n' << std::endl;
+			}
+			pw.push_back(EandD(p, key));
+			std::cout << a++ << " Name: " << EandD(name, key) << "\nLogin: "
+						 << EandD(l, key) << std::endl;
+//			std::cout << "Name: " << EandD(name, key) << "\nLogin: " << EandD(l, key)
+//						 << "\nPassword: " << EandD(p, key) << '\n' << std::endl;
 		}
 	}
+	return pw;
 }
 
 //update it
 void psw::Delete(const std::string& field, const std::string& value) {
 	if (allowLogin) {
-		std::string sql("DELETE from Passwords WHERE " + field + " = '" +
-			 EandD(value, key) + "';");
+		std::string sql("DELETE from Passwords WHERE " + field + " = '" + value + "';");
 		execute_sql(sql);
 	}
 }
@@ -73,8 +86,22 @@ int psw::getUser_ID() const {
 }
 
 psw::psw(const int& uid, const std::string& k, const bool allow)
-	: User_ID(uid), key(k), allowLogin(allow) {}
+	 : User_ID(uid), key(k), allowLogin(allow) {}
 
+
+std::vector<int> psw::SelectID() {
+	std::string sql("SELECT ID from Passwords WHERE User_ID = '" + std::to_string(User_ID) + "';");
+	std::stringstream s = get_executed_sql2(sql);
+	std::vector<int> result;
+	while (s) {
+		std::string id;
+		getline(s, id, '/');
+		if (id.empty())
+			continue;
+		result.push_back(stoi(id));
+	}
+	return result;
+}
 
 
 

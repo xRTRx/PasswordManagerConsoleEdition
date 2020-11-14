@@ -20,8 +20,8 @@ sql::~sql() {
 }
 
 std::stringstream sql::get_executed_sql(const std::string& s) {
+	// function for SelectAll
 	std::stringstream sr;
-	int row = 0;
 	sqlite3_prepare_v2(db, s.c_str(), -1, &stmt, nullptr);
 	bool done = false;
 	while (!done) {
@@ -29,7 +29,6 @@ std::stringstream sql::get_executed_sql(const std::string& s) {
 			case SQLITE_ROW: sr << sqlite3_column_text(stmt, 0) << '\'';
 				sr << sqlite3_column_text(stmt, 1) << '\"';
 				sr << sqlite3_column_text(stmt, 2) << '\n';
-				row++;
 				break;
 
 			case SQLITE_DONE: done = true;
@@ -41,6 +40,28 @@ std::stringstream sql::get_executed_sql(const std::string& s) {
 	}
 	return sr;
 }
+
+
+std::stringstream sql::get_executed_sql2(const std::string& s) {
+	// function for SelectID
+	std::stringstream sr;
+	sqlite3_prepare_v2(db, s.c_str(), -1, &stmt, nullptr);
+	bool done = false;
+	while (!done) {
+		switch (sqlite3_step(stmt)) {
+			case SQLITE_ROW: sr << sqlite3_column_text(stmt, 0) << '/';
+				break;
+
+			case SQLITE_DONE: done = true;
+				break;
+
+			default: fprintf(stderr, "Failed.\n");
+				return static_cast<std::stringstream>("\0");
+		}
+	}
+	return sr;
+}
+
 
 sql::sql() {
 	if(sq){

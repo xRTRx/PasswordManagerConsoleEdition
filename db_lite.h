@@ -13,6 +13,7 @@ class sql {
 	void execute_sql(const std::string& s);
 
 	std::stringstream get_executed_sql(const std::string& s);
+	std::stringstream get_executed_sql2(const std::string& s);
 
 	~sql();
   private:
