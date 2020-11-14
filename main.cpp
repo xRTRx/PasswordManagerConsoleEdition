@@ -1,19 +1,16 @@
 #include "profile.h"
 #include "Passwords.h"
 #include "User.h"
-#include "interface.h"
 #include <boost/algorithm/string.hpp>
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-//	QApplication qa (argc, argv);
-//	toClipboard("Hello");
 	string command1, command2, name, password;
 	bool g1 = true;
 
-	cout << "Enter \"Login\", if you don't have an account type \"Create\" to create new one"
-			  "\nEnter --help or -h to show help\n";
+	cout << "Enter \"Login\" or \"Create\" to start using the app."
+			  "\nEnter --help or -h to get information about app and commands.\n";
 	while (g1) {
 		cin >> command1;
 		boost::algorithm::to_lower(command1);
@@ -96,7 +93,7 @@ int main(int argc, char *argv[]) {
 							} else
 								cout << "This column doesn't exist!\n";
 						}
-					} else if (command2 == "delete") {
+					} else if (command2 == "delete" || command2 == "d") {
 						vector<string> passwords = p1.SelectAll();
 						cout << "Which one do you want to delete: ";
 						cin >> a;
@@ -109,11 +106,15 @@ int main(int argc, char *argv[]) {
 							p1.Delete("ID", to_string(v[a - 1]));
 							cout << "Deleted successfully!\n";
 						}
+					} else if (command2 == "delete user" || command2 == "du") {
+						u1.DeleteUser();
+						cout << name << " account and all it's passwords were deleted.\n";
+						break;
 					} else if (command2 == "logout" || command2 == "lo") {
 						cout << "You logged out!";
 						break;
 					} else if (command2 == "exit" || command2 == "quit") {
-						QApplication::exit(0);
+						exit(0);
 					} else
 						cout << "Command " << command2 << " doesn't exist!\n";
 					cout << "\nEnter command: ";
@@ -134,16 +135,23 @@ int main(int argc, char *argv[]) {
 			cout << "Option is coming soon";
 		} else if (command1 == "--help" || command1 == "-h") {
 			cout << "\nWelcome to Password Manager Console Edition!\n"
-					  "Version: Beta 0.5\nCommands:\n"
-					  "\tlogin or l   Logs you in\n\tcreate or c   Creates a new user account\n"
-					  "\tsettings or s   Sets up configuration options\n\n";
+					  "Version: Beta 0.7\nCommands:\n"
+					  "\tlogin or l   				Logs you in"
+					  "\n\t\t[get] 					Show you the password, Copies the password to clipboard"
+					  "\n\t\t[add] 					Adding new account's data for storage"
+					  "\n\t\t[update] 				Edits existing account's data"
+					  "\n\t\t[delete or d] 			Removes chosen account"
+					  "\n\t\t[delete user or du] 	Removes current application's user and all it's data"
+					  "\n\t\t[logout or lo] 			Logs you out\n"
+					  "\tcreate or c   				Creates a new user account\n"
+					  "\tsettings or s   			Sets up configuration options\n"
+					  "\texit or quit 				Clothes the app\n\n"
+					  "Enter command: ";
 		} else if (command1 == "quit" || command1 == "exit") {
 			g1 = false; // or exit(0);
 		} else {
 			cout << "Command " << command1 << " doesn't exist!\nEnter command: ";
 		}
 	}
-
-//	QApplication::exit(0);
 	return 0;
 }
