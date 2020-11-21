@@ -7,8 +7,10 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-//	QApplication qa (argc, argv);
-//	toClipboard("Hello");
+
+	QApplication qa(argc, argv);
+	toClipboard("--Yay--"); //Test it
+
 	string command1, command2, name, password;
 	bool g1 = true;
 
@@ -113,7 +115,8 @@ int main(int argc, char *argv[]) {
 						cout << "You logged out!";
 						break;
 					} else if (command2 == "exit" || command2 == "quit") {
-						QApplication::exit(0);
+						exit(0);
+//						QApplication::exit(0);
 					} else
 						cout << "Command " << command2 << " doesn't exist!\n";
 					cout << "\nEnter command: ";
@@ -144,6 +147,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-//	QApplication::exit(0);
+//	QApplication::exec();
+//	QApplication::quit();
 	return 0;
 }
